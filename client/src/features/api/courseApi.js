@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-
 const COURSE_API = "https://e-learning-website-b8sl.onrender.com/api/v1/course";
 
 export const courseApi = createApi({
@@ -14,34 +13,31 @@ export const courseApi = createApi({
   endpoints: (builder) => ({
     createCourse: builder.mutation({
       query: ({ courseTitle, category }) => ({
-        url: "", // It will be used only the baseURL (POST)
+        url: "/", // More explicit than empty string
         method: "POST",
         body: { courseTitle, category },
       }),
-      invalidatesTags: ["Refetch_Creator_Course"]
+      invalidatesTags: ["Refetch_Creator_Course"],
     }),
 
-    getSearchCourse:builder.query({
-      query: ({searchQuery, categories, sortByPrice}) => {
-        // Build qiery string
-        let queryString = `/search?query=${encodeURIComponent(searchQuery)}`
+    getSearchCourse: builder.query({
+      query: ({ searchQuery, categories, sortByPrice }) => {
+        let queryString = `/search?query=${encodeURIComponent(searchQuery)}`;
 
-        // append cateogry 
-        if(categories && categories.length > 0) {
+        if (categories && categories.length > 0) {
           const categoriesString = categories.map(encodeURIComponent).join(",");
-          queryString += `&categories=${categoriesString}`; 
+          queryString += `&categories=${categoriesString}`;
         }
 
-        // Append sortByPrice is available
-        if(sortByPrice){
-          queryString += `&sortByPrice=${encodeURIComponent(sortByPrice)}`; 
+        if (sortByPrice) {
+          queryString += `&sortByPrice=${encodeURIComponent(sortByPrice)}`;
         }
 
         return {
-          url:queryString,
-          method:"GET", 
-        }
-      }
+          url: queryString,
+          method: "GET",
+        };
+      },
     }),
 
     getPublishedCourse: builder.query({
@@ -50,20 +46,21 @@ export const courseApi = createApi({
         method: "GET",
       }),
     }),
+
     deleteCourse: builder.mutation({
       query: (courseId) => ({
-        url: `/${courseId}`, // ✅ correct route
+        url: `/${courseId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Refetch_Creator_Course"], // optional: ensures list updates
+      invalidatesTags: ["Refetch_Creator_Course"],
     }),
-    
+
     getCreatorCourse: builder.query({
       query: () => ({
-        url: "", // It will be used only the baseURL (GET)
+        url: "/", // Explicit base URL
         method: "GET",
       }),
-      providesTags: ["Refetch_Creator_Course"]
+      providesTags: ["Refetch_Creator_Course"],
     }),
 
     editCourse: builder.mutation({
@@ -72,7 +69,7 @@ export const courseApi = createApi({
         method: "PUT",
         body: formData,
       }),
-      invalidatesTags: ["Refetch_Creator_Course"]
+      invalidatesTags: ["Refetch_Creator_Course"],
     }),
 
     getCourseById: builder.query({
@@ -81,13 +78,16 @@ export const courseApi = createApi({
         method: "GET",
       }),
     }),
+
     createLecture: builder.mutation({
       query: ({ lectureTitle, courseId }) => ({
         url: `/${courseId}/lecture`,
         method: "POST",
         body: { lectureTitle },
       }),
+      invalidatesTags: ["Refetch_Lecture"],
     }),
+
     getCourseLecture: builder.query({
       query: (courseId) => ({
         url: `/${courseId}/lecture`,
@@ -105,9 +105,10 @@ export const courseApi = createApi({
         lectureId,
       }) => ({
         url: `/${courseId}/lecture/${lectureId}`,
-        method: "POST", // Changed from POST to PUT
+        method: "PUT", // Corrected to PUT
         body: { lectureTitle, videoInfo, isPreviewFree },
       }),
+      invalidatesTags: ["Refetch_Lecture"],
     }),
 
     removeLecture: builder.mutation({
@@ -126,12 +127,12 @@ export const courseApi = createApi({
     }),
 
     publishCourse: builder.mutation({
-      query: ({ courseId, query }) => ({
-        url: `/${courseId}?publish=${query}`,
+      query: ({ courseId, publish }) => ({
+        url: `/${courseId}?publish=${publish}`,
         method: "PATCH",
       }),
+      invalidatesTags: ["Refetch_Creator_Course"],
     }),
-  
   }),
 });
 
@@ -139,8 +140,7 @@ export const {
   useCreateCourseMutation,
   useGetSearchCourseQuery,
   useGetPublishedCourseQuery,
-  useDeleteCourseMutation, // ✅ Export this hook
-
+  useDeleteCourseMutation,
   useGetCreatorCourseQuery,
   useEditCourseMutation,
   useGetCourseByIdQuery,
