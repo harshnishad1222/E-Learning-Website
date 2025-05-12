@@ -4,6 +4,7 @@ const COURSE_PROGRESS_API = "https://e-learning-website-b8sl.onrender.com/api/v1
 
 export const courseProgressApi = createApi({
   reducerPath: "courseProgressApi",
+  tagTypes: ["CourseProgress"],
   baseQuery: fetchBaseQuery({
     baseUrl: COURSE_PROGRESS_API,
     credentials: "include",
@@ -14,32 +15,38 @@ export const courseProgressApi = createApi({
         url: `/${courseId}`,
         method: "GET",
       }),
+      providesTags: (result, error, courseId) => [{ type: "CourseProgress", id: courseId }],
     }),
+
     updateLectureProgress: builder.mutation({
       query: ({ courseId, lectureId }) => ({
         url: `/${courseId}/lecture/${lectureId}/view`,
-        method:"POST"
+        method: "POST",
       }),
+      invalidatesTags: (result, error, { courseId }) => [{ type: "CourseProgress", id: courseId }],
     }),
 
     completeCourse: builder.mutation({
-        query:(courseId) => ({
-            url:`/${courseId}/complete`,
-            method:"POST"
-        })
+      query: (courseId) => ({
+        url: `/${courseId}/complete`,
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, courseId) => [{ type: "CourseProgress", id: courseId }],
     }),
+
     inCompleteCourse: builder.mutation({
-        query:(courseId) => ({
-            url:`/${courseId}/incomplete`,
-            method:"POST"
-        })
+      query: (courseId) => ({
+        url: `/${courseId}/incomplete`,
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, courseId) => [{ type: "CourseProgress", id: courseId }],
     }),
-    
   }),
 });
+
 export const {
-useGetCourseProgressQuery,
-useUpdateLectureProgressMutation,
-useCompleteCourseMutation,
-useInCompleteCourseMutation
+  useGetCourseProgressQuery,
+  useUpdateLectureProgressMutation,
+  useCompleteCourseMutation,
+  useInCompleteCourseMutation,
 } = courseProgressApi;
