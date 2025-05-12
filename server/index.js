@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://e-learning-website-teal-sigma.vercel.app/"],
+    origin: ["http://localhost:5173", "https://e-learning-website-cop3v4n1r-harsh-nishads-projects-4daddf71.vercel.app"],
     credentials: true
 }));
 
