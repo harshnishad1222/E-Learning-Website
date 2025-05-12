@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://alphalearning-4.onrender.com"],
+    origin: ["http://localhost:5173", "https://e-learning-website-teal-sigma.vercel.app/"],
     credentials: true
 }));
 
