@@ -25,7 +25,7 @@ app.use(cookieParser());
 // CORS configuration
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://alphalearning-4.onrender.com"],
+    origin: ["http://localhost:5173", "https://e-learning-website-f.onrender.com"],
     credentials: true,
   })
 );
