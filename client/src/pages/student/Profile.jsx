@@ -27,8 +27,8 @@ const Profile = () => {
 
   useEffect(() => {
     if (user) {
-      setName(user.name);
-      setPreviewImage(user.photoUrl);
+      setName(user.name || "");
+      setPreviewImage(user.photoUrl || null);
     }
   }, [user]);
 
@@ -52,7 +52,7 @@ const Profile = () => {
     }
 
     const formData = new FormData();
-    formData.append("name", name || user.name);
+    formData.append("name", name || user?.name || "");
     if (croppedImageBlob) {
       formData.append("profilePhoto", croppedImageBlob, "cropped.jpeg");
     }
@@ -72,7 +72,11 @@ const Profile = () => {
     }
   }, [isSuccess, isError]);
 
-  if (isLoading) return <h1 className="text-center mt-20 text-xl animate-pulse">Loading your profile...</h1>;
+  if (isLoading || !user) {
+    return (
+      <h1 className="text-center mt-20 text-xl animate-pulse">Loading your profile...</h1>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-6 my-24">
@@ -111,13 +115,13 @@ const Profile = () => {
           {!editMode ? (
             <>
               <p className="text-lg font-semibold">
-                👤 Name: <span className="text-xl font-bold text-black dark:text-white">{user.name}</span>
+                👤 Name: <span className="text-xl font-bold text-black dark:text-white">{user?.name || "N/A"}</span>
               </p>
               <p className="text-lg mt-2">
-                📧 Email: <span className="font-medium">{user.email}</span>
+                📧 Email: <span className="font-medium">{user?.email || "N/A"}</span>
               </p>
               <p className="text-lg mt-2">
-                🎓 Role: <span className="uppercase font-semibold text-blue-600 dark:text-blue-400">{user.role}</span>
+                🎓 Role: <span className="uppercase font-semibold text-blue-600 dark:text-blue-400">{user?.role || "N/A"}</span>
               </p>
               <Button
                 onClick={() => setEditMode(true)}
@@ -195,10 +199,10 @@ const Profile = () => {
           📚 Your Enrolled Courses
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {user.enrolledCourses.length === 0 ? (
+          {user?.enrolledCourses?.length === 0 ? (
             <p className="text-center text-gray-500 dark:text-gray-400">You haven't enrolled in any courses yet.</p>
           ) : (
-            user.enrolledCourses.map((course) => (
+            user?.enrolledCourses?.map((course) => (
               <motion.div
                 key={course._id}
                 whileHover={{ scale: 1.05 }}
@@ -210,7 +214,8 @@ const Profile = () => {
           )}
         </div>
       </motion.div>
-      <BackButton/>
+
+      <BackButton />
     </div>
   );
 };
