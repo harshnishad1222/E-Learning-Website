@@ -7,7 +7,11 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: USER_API,
-    credentials: "include", // This ensures cookies are sent
+    credentials: "include", // Ensure cookies are sent with all requests
+    prepareHeaders: (headers) => {
+      headers.set("Accept", "application/json");
+      return headers;
+    },
   }),
   endpoints: (builder) => ({
     // Register
@@ -67,7 +71,7 @@ export const authApi = createApi({
       },
     }),
 
-    // Update Profile (with file upload)
+    // Update Profile (multipart/form-data supported)
     updateUser: builder.mutation({
       query: (formData) => ({
         url: "profile/update",
