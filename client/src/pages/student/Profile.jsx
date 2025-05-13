@@ -21,7 +21,9 @@ const Profile = () => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
 
-  const { data, isLoading, refetch } = useLoadUserQuery();
+   const { data, isLoading, refetch } = useLoadUserQuery(undefined, {
+  refetchOnMountOrArgChange: true,
+});
   const [updateUser, { isLoading: updateUserIsLoading, isSuccess, isError, error }] = useUpdateUserMutation();
   const user = data?.user;
 
