@@ -50,6 +50,7 @@ export const authApi = createApi({
       async onQueryStarted(_, { dispatch }) {
         try {
           dispatch(userLoggedOut());
+           authApi.util.invalidateTags(["Profile"]);
         } catch (error) {
           console.error("Logout error:", error);
         }
