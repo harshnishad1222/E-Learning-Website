@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 const isAuthenticated = async (req, res, next) => {
   try {
-    // Match the cookie name set in generateToken()
+    // Get token from cookie
     const token = req.cookies.jwt;
 
     if (!token) {
@@ -12,14 +12,26 @@ const isAuthenticated = async (req, res, next) => {
       });
     }
 
-    // Verify token
+    // Verify and decode token
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
-    // Attach decoded info (userId) to request
+    // ✅ Debug: Log decoded token
+    console.log("Decoded JWT:", decoded);
+
+    if (!decoded || !decoded.userId) {
+      return res.status(401).json({
+        message: "Invalid token payload. User ID missing.",
+        success: false,
+      });
+    }
+
+    // Attach userId to request object
     req.id = decoded.userId;
 
-    next(); // Proceed
+    next(); // Continue to next middleware or route
   } catch (error) {
+    console.error("JWT Error:", error);
+
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({
         message: "Token expired. Please log in again.",
