@@ -86,7 +86,7 @@ export const logout = async (_, res) => {
   try {
     return res
       .status(200)
-      .cookie("token", "", {
+      .cookie("jwt", "", {
         maxAge: 0,
         httpOnly: true,
         sameSite: "Lax",
