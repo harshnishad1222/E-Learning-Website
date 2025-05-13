@@ -41,7 +41,7 @@ const appRouter = createBrowserRouter([
         path: "/",
         element: (
           <>
-             window.location.reload();
+            
             <HeroSection />
             <Courses />
             
