@@ -73,7 +73,7 @@ const Login = () => {
     }
     if(loginIsSuccess && loginData){
       toast.success(loginData.message || "Login successful.");
-       navigate("/");
+       window.location.href = "/";
     }
     if(loginError){ 
       toast.error(loginError.data.message || "login Failed");
