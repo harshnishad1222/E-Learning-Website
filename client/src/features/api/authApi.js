@@ -50,6 +50,9 @@ export const authApi = createApi({
       }),
       async onQueryStarted(_, { dispatch }) {
         try {
+
+          sessionStorage.removeItem("reloadedAfterLogin");
+
           dispatch(userLoggedOut());
            authApi.util.invalidateTags(["Profile"]);
         } catch (error) {
