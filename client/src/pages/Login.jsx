@@ -73,8 +73,9 @@ const Login = () => {
     }
     if(loginIsSuccess && loginData){
       toast.success(loginData.message || "Login successful.");
-       navigate("/", { replace: true });
-    window.location.reload();
+       setTimeout(() => {
+      window.location.href = "/"; // Better than navigate + reload
+    }, 500); 
     }
     if(loginError){ 
       toast.error(loginError.data.message || "login Failed");
