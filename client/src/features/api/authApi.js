@@ -34,7 +34,6 @@ export const authApi = createApi({
         try {
           const result = await queryFulfilled;
           dispatch(userLoggedIn({ user: result.data.user }));
-           authApi.util.invalidateTags(["Profile"]);
                 window.location.reload();
 
         } catch (error) {
