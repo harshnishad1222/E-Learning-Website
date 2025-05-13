@@ -82,19 +82,19 @@ export const login = async (req, res) => {
 };
 
 // ✅ Logout User
+// ✅ Logout User
 export const logout = async (_, res) => {
   try {
     return res
-      .status(200)
-      .cookie("jwt", "", {
-        maxAge: 0,
+      .clearCookie("jwt", {
         httpOnly: true,
-        sameSite: "Lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: "None",  // Same as token generation
+        secure: true,      // Must match
       })
+      .status(200)
       .json({
-        message: "Logged out successfully.",
         success: true,
+        message: "Logged out successfully.",
       });
   } catch (error) {
     console.error(error);
@@ -104,6 +104,7 @@ export const logout = async (_, res) => {
     });
   }
 };
+
 
 // ✅ Get User Profile
 export const getUserProfile = async (req, res) => {
