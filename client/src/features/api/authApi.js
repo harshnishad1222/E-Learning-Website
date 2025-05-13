@@ -34,7 +34,7 @@ export const authApi = createApi({
         try {
           const result = await queryFulfilled;
           dispatch(userLoggedIn({ user: result.data.user }));
-                window.location.reload();
+              authApi.util.invalidateTags(["Profile"]);
 
         } catch (error) {
           console.error("Login failed:", error);
