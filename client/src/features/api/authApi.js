@@ -62,6 +62,7 @@ export const authApi = createApi({
         url: "profile",
         method: "GET",
       }),
+      providesTags: ["Profile"],
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
