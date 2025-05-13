@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -51,16 +51,21 @@ const CourseTab = () => {
     const [publishCourse, { isLoading: isPublishing }] = usePublishCourseMutation();
     const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation();
 
+    const categories = useMemo(() => [
+        "Next JS", "Data Science", "Frontend Development", "Fullstack Development",
+        "MERN Stack Development", "Javascript", "Python", "Docker", "MongoDB", "HTML"
+    ], []);
+
     useEffect(() => {
         if (courseByIdData?.course) {
             const course = courseByIdData.course;
             setInput({
-                courseTitle: course.courseTitle,
-                subTitle: course.subTitle,
-                description: course.description,
-                category: course.category,
-                courseLevel: course.courseLevel,
-                coursePrice: course.coursePrice,
+                courseTitle: course.courseTitle || "",
+                subTitle: course.subTitle || "",
+                description: course.description || "",
+                category: course.category || "",
+                courseLevel: course.courseLevel || "",
+                coursePrice: course.coursePrice || "",
                 courseThumbnail: "",
             });
         }
@@ -85,11 +90,21 @@ const CourseTab = () => {
     };
 
     const updateCourseHandler = async () => {
-        const formData = new FormData();
-        Object.entries(input).forEach(([key, value]) => {
-            if (value) formData.append(key, value);
-        });
-        await editCourse({ formData, courseId });
+        try {
+            const formData = new FormData();
+            Object.entries(input).forEach(([key, value]) => {
+                if (key === "courseThumbnail" && value instanceof File) {
+                    formData.append(key, value);
+                } else if (key === "coursePrice") {
+                    formData.append(key, Number(value));
+                } else if (value) {
+                    formData.append(key, value);
+                }
+            });
+            await editCourse({ formData, courseId }).unwrap();
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to update course");
+        }
     };
 
     const publishStatusHandler = async () => {
@@ -104,7 +119,7 @@ const CourseTab = () => {
         try {
             const res = await publishCourse({
                 courseId,
-                query: nextStatus.toString(),
+                publish: nextStatus.toString(),
             }).unwrap();
 
             toast.success(res.message || `Course ${nextStatus ? "published" : "unpublished"} successfully.`);
@@ -115,6 +130,9 @@ const CourseTab = () => {
     };
 
     const handleDeleteCourse = async () => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this course?");
+        if (!confirmDelete) return;
+
         try {
             await deleteCourse(courseId).unwrap();
             toast.success("Course deleted successfully");
@@ -214,10 +232,7 @@ const CourseTab = () => {
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Category</SelectLabel>
-                                    {[
-                                        "Next JS", "Data Science", "Frontend Development", "Fullstack Development",
-                                        "MERN Stack Development", "Javascript", "Python", "Docker", "MongoDB", "HTML"
-                                    ].map(cat => (
+                                    {categories.map(cat => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                     ))}
                                 </SelectGroup>
